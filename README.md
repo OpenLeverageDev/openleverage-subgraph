@@ -1,0 +1,1 @@
+The Graph exposes a GraphQL endpoint to query the events and entities within the openleverage ecosystem.

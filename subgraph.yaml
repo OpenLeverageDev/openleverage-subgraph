@@ -1,0 +1,117 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: LPool
+    network: mainnet
+    source:
+      address: "0xe9e2c2304cfdf9c2cc9e0e7fa66b5737aea98429"
+      abi: LPool
+      startBlock: 13754726
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Borrow
+        - Mint
+        - Redeem
+        - RepayBorrow
+        - ReservesAdded
+        - ReservesReduced
+        - Transfer
+      abis:
+        - name: LPool
+          file: ./abis/LPool.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
+        - event: Borrow(address,address,uint256,uint256,uint256)
+          handler: handleBorrow
+        - event: Mint(address,uint256,uint256)
+          handler: handleMint
+        - event: Redeem(address,uint256,uint256)
+          handler: handleRedeem
+        - event: RepayBorrow(address,address,uint256,uint256,uint256,uint256)
+          handler: handleRepayBorrow
+        - event: ReservesAdded(address,uint256,uint256)
+          handler: handleReservesAdded
+        - event: ReservesReduced(address,uint256,uint256)
+          handler: handleReservesReduced
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/mapping/lpool.ts
+  - kind: ethereum/contract
+    name: Controller
+    network: mainnet
+    source:
+      address: "0x0eabe8e34a1fae4601953667f811acb9ff808e78"
+      abi: Controller
+      startBlock: 13754726
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - LPoolPairCreated
+      abis:
+        - name: Controller
+          file: ./abis/Controller.json
+      eventHandlers:
+        - event: LPoolPairCreated(address,address,address,address,uint16,uint16,bytes)
+          handler: handleLPoolPairCreated
+      file: ./src/mapping/controller.ts
+  - kind: ethereum/contract
+    name: Factory
+    network: mainnet
+    source:
+      address: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'
+      abi: Factory
+      startBlock: 13754726
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Pair
+        - Token
+      abis:
+        - name: Factory
+          file: ./abis/Factory.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+      eventHandlers:
+        - event: PairCreated(indexed address,indexed address,address,uint256)
+          handler: handleNewPair
+      file: ./src/mapping/factory.ts
+  - kind: ethereum/contract
+    name: Lever
+    network: mainnet
+    source:
+      address: "0x03bf707deb2808f711bb0086fc17c5cafa6e8aaf"
+      abi: Lever
+      startBlock: 13754726
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Liquidation
+        - MarginTrade
+        - TradeClosed
+      abis:
+        - name: Lever
+          file: ./abis/Lever.json
+      eventHandlers:
+        - event: Liquidation(address,uint16,bool,bool,uint256,uint256,address,uint256,uint256,uint256,uint256,uint256,uint32)
+          handler: handleLiquidation
+        - event: MarginTrade(address,uint16,bool,bool,uint256,uint256,uint256,uint256,uint256,uint32)
+          handler: handleMarginTrade
+        - event: TradeClosed(address,uint16,bool,bool,uint256,uint256,uint256,uint256,uint256,uint32)
+          handler: handleTradeClosed
+      file: ./src/mapping/lever.ts
