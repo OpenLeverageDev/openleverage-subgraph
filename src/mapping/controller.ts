@@ -99,8 +99,9 @@ export function handleLPoolPairCreated(event: LPoolPairCreated): void {
     token1.txCount = ZERO_BI
   }
 
-  // log.info("test contract start, pool0={}, pool1={}", [Address.fromString(token0.id).toHexString(), Address.fromString(token1.id).toHexString()])
-  // controllerContract
+  log.info("test contract start, pool0={}, pool1={}", [event.params.pool0.toHexString(), event.params.pool1.toHexString()])
+  let value1 = controllerContract.lpoolPairs(Address.fromString(event.params.pool0.toHexString()), Address.fromString(event.params.pool1.toHexString())).value0.toHexString()
+  log.info("test contract end, res = {}", [value1])
 
   log.info("getPair start, token0={}, token1={}", [Address.fromString(token0.id).toHexString(), Address.fromString(token1.id).toHexString()])
   let pairId = factoryContract.getPair(Address.fromString(token0.id), Address.fromString(token1.id)).toHexString()
@@ -111,7 +112,7 @@ export function handleLPoolPairCreated(event: LPoolPairCreated): void {
   pair.token1 = token1.id
   pair.isV2 = isV2
   pair.pool0 = event.params.pool0.toHexString()
-  pair.pool1 = event.params.pool0.toHexString()
+  pair.pool1 = event.params.pool1.toHexString()
   pair.liquidityProviderCount = ZERO_BI
   pair.createdAtTimestamp = event.block.timestamp
   pair.createdAtBlockNumber = event.block.number
