@@ -70,6 +70,7 @@ type Pair @entity {
   pool1: String!
 
   isV2: Boolean!
+  dexName: BigInt!
 
   # derived liquidity
   reserveETH: BigDecimal!

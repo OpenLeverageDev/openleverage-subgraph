@@ -58,26 +58,6 @@ dataSources:
       abis:
         - name: Controller
           file: ./abis/Controller.json
-      eventHandlers:
-        - event: LPoolPairCreated(address,address,address,address,uint16,uint16,bytes)
-          handler: handleLPoolPairCreated
-      file: ./src/mapping/controller.ts
-  - kind: ethereum/contract
-    name: Factory
-    network: mainnet
-    source:
-      address: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'
-      abi: Factory
-      startBlock: 13754726
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - PairCreated
-        - Pair
-        - Token
-      abis:
         - name: Factory
           file: ./abis/Factory.json
         - name: ERC20
@@ -87,9 +67,9 @@ dataSources:
         - name: ERC20NameBytes
           file: ./abis/ERC20NameBytes.json
       eventHandlers:
-        - event: PairCreated(indexed address,indexed address,address,uint256)
-          handler: handleNewPair
-      file: ./src/mapping/factory.ts
+        - event: LPoolPairCreated(address,address,address,address,uint16,uint16,bytes)
+          handler: handleLPoolPairCreated
+      file: ./src/mapping/controller.ts
   - kind: ethereum/contract
     name: Lever
     network: mainnet
@@ -108,6 +88,8 @@ dataSources:
       abis:
         - name: Lever
           file: ./abis/Lever.json
+        - name: Dex
+          file: ./abis/Dex.json
       eventHandlers:
         - event: Liquidation(address,uint16,bool,bool,uint256,uint256,address,uint256,uint256,uint256,uint256,uint256,uint32)
           handler: handleLiquidation

@@ -1,14 +1,14 @@
 import { log, BigInt, BigDecimal, Address } from '@graphprotocol/graph-ts'
 import {Controller} from "../../generated/Controller/Controller";
-import {TokenDefinition} from "./tokenDefinition";
-import {ERC20} from "../../generated/Factory/ERC20";
-import {ERC20SymbolBytes} from "../../generated/Factory/ERC20SymbolBytes";
-import {ERC20NameBytes} from "../../generated/Factory/ERC20NameBytes";
+import {ERC20} from "../../generated/Controller/ERC20";
+import {ERC20SymbolBytes} from "../../generated/Controller/ERC20SymbolBytes";
+import {ERC20NameBytes} from "../../generated/Controller/ERC20NameBytes";
 
 
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
-export const FACTORY_ADDRESS_V2 = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'
+export const FACTORY_ADDRESS_V2 = '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f'
 export const FACTORY_ADDRESS_V3 = '0x1f98431c8ad98523631ae4a59f267346ea31f984'
+export const DEX_AGG_ADDRESS = '0xd78b5db4aec619779b4c7d1ab99e290e6347d66a'
 
 export let ZERO_BI = BigInt.fromI32(0)
 export let ONE_BI = BigInt.fromI32(1)
@@ -20,18 +20,11 @@ export let factoryContractV2 = Controller.bind(Address.fromString(FACTORY_ADDRES
 export let factoryContractV3 = Controller.bind(Address.fromString(FACTORY_ADDRESS_V3))
 
 export function fetchTokenSymbol(tokenAddress: Address): string {
-    // static definitions overrides
-    let staticDefinition = TokenDefinition.fromAddress(tokenAddress)
-    log.info("fetchTokenSymbol address={}, staticDefinition={}", [tokenAddress.toHexString(), staticDefinition == null ? "" : staticDefinition.name.toString()])
-    if(staticDefinition != null) {
-        return (staticDefinition as TokenDefinition).symbol
-    }
-    log.info("start ERC20 query : {}, Address = {}", ["fetchTokenSymbol", tokenAddress.toHexString()])
+    let symbolValue = 'unknown'
     let contract = ERC20.bind(tokenAddress)
     let contractSymbolBytes = ERC20SymbolBytes.bind(tokenAddress)
 
     // try types string and bytes32 for symbol
-    let symbolValue = 'unknown'
     let symbolResult = contract.try_symbol()
     if (symbolResult.reverted) {
         let symbolResultBytes = contractSymbolBytes.try_symbol()
@@ -44,23 +37,15 @@ export function fetchTokenSymbol(tokenAddress: Address): string {
     } else {
         symbolValue = symbolResult.value
     }
-
     return symbolValue
 }
 
 export function fetchTokenName(tokenAddress: Address): string {
-    // static definitions overrides
-    let staticDefinition = TokenDefinition.fromAddress(tokenAddress)
-    if(staticDefinition != null) {
-        return (staticDefinition as TokenDefinition).name
-    }
-    log.info("start ERC20 query : {}, Address = {}", ["fetchTokenName", tokenAddress.toHexString()])
-
+    let nameValue = 'unknown'
     let contract = ERC20.bind(tokenAddress)
     let contractNameBytes = ERC20NameBytes.bind(tokenAddress)
 
     // try types string and bytes32 for name
-    let nameValue = 'unknown'
     let nameResult = contract.try_name()
     if (nameResult.reverted) {
         let nameResultBytes = contractNameBytes.try_name()
@@ -73,31 +58,24 @@ export function fetchTokenName(tokenAddress: Address): string {
     } else {
         nameValue = nameResult.value
     }
-
     return nameValue
 }
 
 export function fetchTokenTotalSupply(tokenAddress: Address): BigInt {
-    return ZERO_BI
-    // let contract = ERC20.bind(tokenAddress)
-    // let totalSupplyValue = new BigInt(0)
-    // let totalSupplyResult = contract.try_totalSupply()
-    // if (!totalSupplyResult.reverted) {
-    //     totalSupplyValue = totalSupplyResult.value
-    // }
-    // return totalSupplyValue
+    let totalSupplyValue = new BigInt(0)
+    let contract = ERC20.bind(tokenAddress)
+    let totalSupplyResult = contract.try_totalSupply()
+    if (!totalSupplyResult.reverted) {
+        totalSupplyValue = totalSupplyResult.value
+    }
+    return totalSupplyValue
 }
 
 export function fetchTokenDecimals(tokenAddress: Address): BigInt {
-    // static definitions overrides
-    let staticDefinition = TokenDefinition.fromAddress(tokenAddress)
-    if(staticDefinition != null) {
-        return (staticDefinition as TokenDefinition).decimals
-    }
-    log.info("start ERC20 query : {}, Address = {}", ["fetchTokenDecimals", tokenAddress.toHexString()])
-    let contract = ERC20.bind(tokenAddress)
-    // try types uint8 for decimals
     let decimalValue = null
+    let contract = ERC20.bind(tokenAddress)
+
+    // try types uint8 for decimals
     let decimalResult = contract.try_decimals()
     if (!decimalResult.reverted) {
         decimalValue = decimalResult.value
@@ -123,6 +101,8 @@ export function exponentToBigDecimal(decimals: BigInt): BigDecimal {
     }
     return bd
 }
+
+
 
 
 

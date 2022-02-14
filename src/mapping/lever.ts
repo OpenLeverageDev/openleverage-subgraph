@@ -7,12 +7,13 @@ import {
 } from "../../generated/Lever/Lever"
 import {Bundle, Market, Pair, Token, TradeRecord} from "../../generated/schema";
 import {convertTokenToDecimal} from "./common";
+import {findTokenUSDCPrice} from "./pricing";
 
 export function handleLiquidation(event: Liquidation): void {}
 
 export function handleMarginTrade(event: MarginTrade): void {
   log.info("start handleMarginTrade ", [event.block.number.toString()])
-  let id = event.transaction.hash.toHexString() + "marginTrade"
+  let id = event.transaction.hash.toHexString() + "_" + "marginTrade"
   let tradeRecord = TradeRecord.load(id)
   let market = Market.load(event.params.marketId.toString())
   if (!market) {
@@ -36,17 +37,17 @@ export function handleMarginTrade(event: MarginTrade): void {
   }
   let tokenId = event.params.longToken ? pair.token1 : pair.token0
   let token = Token.load(tokenId)
-  if (!token){
+  let quoteToken = Token.load(tokenId == pair.token0 ? pair.token1 : pair.token0)
+  if (!token || !quoteToken){
     return;
   }
   tradeRecord.amount = convertTokenToDecimal(event.params.held, token.decimals)
-  let bundle = Bundle.load('1')
-  tradeRecord.amountUSD = tradeRecord.amount.times(BigDecimal.zero())
+  tradeRecord.amountUSD = tradeRecord.amount.times(findTokenUSDCPrice(token, quoteToken , pair.dexName))
   tradeRecord.save()
 }
 
 export function handleTradeClosed(event: TradeClosed): void {
-  let id = event.transaction.hash.toHexString() + "tradeClosed"
+  let id = event.transaction.hash.toHexString() + "_" + "tradeClosed"
   let tradeRecord = TradeRecord.load(id)
   let market = Market.load(event.params.marketId.toString())
   if (!market) {
@@ -65,20 +66,16 @@ export function handleTradeClosed(event: TradeClosed): void {
   }
   let pair = Pair.load(pairId)
   if (!pair){
-    log.error("handle marginTrade event error, pair is null", [pairId])
+    log.error("handle TradeClosed event error, pair is null", [pairId])
     return;
   }
   let tokenId = event.params.longToken ? pair.token1 : pair.token0
   let token = Token.load(tokenId)
-  if (!token){
+  let quoteToken = Token.load(tokenId == pair.token0 ? pair.token1 : pair.token0)
+  if (!token || !quoteToken){
     return;
   }
   tradeRecord.amount = convertTokenToDecimal(event.params.closeAmount, token.decimals)
-  let bundle = Bundle.load('1')
-  tradeRecord.amountUSD = tradeRecord.amount.times(BigDecimal.zero())
-
-  // if (bundle && token.derivedETH){
-  //   tradeRecord.amountUSD = tradeRecord.amount.times(bundle.ethPrice.times(token.derivedETH == null ? BigDecimal.zero() : token.derivedETH))
-  // }
+  tradeRecord.amountUSD = tradeRecord.amount.times(findTokenUSDCPrice(token, quoteToken , pair.dexName))
   tradeRecord.save()
 }
