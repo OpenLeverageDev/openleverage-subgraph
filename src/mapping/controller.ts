@@ -6,6 +6,8 @@ import {
 } from "../../generated/Controller/Controller"
 import {Bundle, Factory, Market, Pair, Token} from "../../generated/schema"
 import { Factory as FactoryContract } from "../../generated/Factory/Factory"
+import { Controller as ControllerContract } from "../../generated/Controller/Controller"
+
 import {
   FACTORY_ADDRESS_V2,
   fetchTokenDecimals,
@@ -18,6 +20,8 @@ import {
 
 
 export let factoryContract = FactoryContract.bind(Address.fromString(FACTORY_ADDRESS_V2))
+export let controllerContract = ControllerContract.bind(Address.fromString("0x0eabe8e34a1fae4601953667f811acb9ff808e78"))
+
 
 export function handleLPoolPairCreated(event: LPoolPairCreated): void {
   let factory = Factory.load(FACTORY_ADDRESS_V2)
@@ -94,6 +98,9 @@ export function handleLPoolPairCreated(event: LPoolPairCreated): void {
     // token1.allPairs = []
     token1.txCount = ZERO_BI
   }
+
+  // log.info("test contract start, pool0={}, pool1={}", [Address.fromString(token0.id).toHexString(), Address.fromString(token1.id).toHexString()])
+  // controllerContract
 
   log.info("getPair start, token0={}, token1={}", [Address.fromString(token0.id).toHexString(), Address.fromString(token1.id).toHexString()])
   let pairId = factoryContract.getPair(Address.fromString(token0.id), Address.fromString(token1.id)).toHexString()
