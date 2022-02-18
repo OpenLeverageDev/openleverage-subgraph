@@ -8,7 +8,7 @@ import {Bundle, Factory, Market, Pair, Token} from "../../generated/schema"
 import { Factory as FactoryContract } from "../../generated/Controller/Factory"
 
 import {
-  FACTORY_ADDRESS_V2, FACTORY_ADDRESS_V3,
+  FACTORY_ADDRESS_V2, FACTORY_ADDRESS_V3, FACTORY_ID,
   fetchTokenDecimals,
   fetchTokenName,
   fetchTokenSymbol,
@@ -22,9 +22,9 @@ export let factoryContractV2 = FactoryContract.bind(Address.fromString(FACTORY_A
 export let factoryContractV3 = FactoryContract.bind(Address.fromString(FACTORY_ADDRESS_V3))
 
 export function handleLPoolPairCreated(event: LPoolPairCreated): void {
-  let factory = Factory.load(FACTORY_ADDRESS_V2)
+  let factory = Factory.load(FACTORY_ID)
   if (factory === null) {
-    factory = new Factory(FACTORY_ADDRESS_V2)
+    factory = new Factory(FACTORY_ID)
     factory.pairCount = 0
     factory.totalVolumeETH = ZERO_BD
     factory.totalLiquidityETH = ZERO_BD

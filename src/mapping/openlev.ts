@@ -5,8 +5,8 @@ import {
   MarginTrade,
   TradeClosed
 } from "../../generated/Lever/Lever"
-import {Bundle, Market, Pair, Token, TradeRecord} from "../../generated/schema";
-import {convertTokenToDecimal} from "./common";
+import {Bundle, Factory, Market, Pair, Token, TradeRecord} from "../../generated/schema";
+import {convertTokenToDecimal, FACTORY_ID} from "./common";
 import {findTokenUSDCPrice} from "./pricing";
 
 export function handleLiquidation(event: Liquidation): void {}
@@ -44,6 +44,11 @@ export function handleMarginTrade(event: MarginTrade): void {
   tradeRecord.amount = convertTokenToDecimal(event.params.held, token.decimals)
   tradeRecord.amountUSD = tradeRecord.amount.times(findTokenUSDCPrice(token, quoteToken , pair.dexName))
   tradeRecord.save()
+  // let factory = Factory.load(FACTORY_ID)
+  // if (factory != null && factory.totalVolumeUSD != null && tradeRecord != null && tradeRecord.amountUSD != null){
+  //   factory.totalVolumeUSD = factory.totalVolumeUSD.plus(tradeRecord.amountUSD)
+  //   factory.save()
+  // }
 }
 
 export function handleTradeClosed(event: TradeClosed): void {
@@ -78,4 +83,9 @@ export function handleTradeClosed(event: TradeClosed): void {
   tradeRecord.amount = convertTokenToDecimal(event.params.closeAmount, token.decimals)
   tradeRecord.amountUSD = tradeRecord.amount.times(findTokenUSDCPrice(token, quoteToken , pair.dexName))
   tradeRecord.save()
+  // let factory = Factory.load(FACTORY_ID)
+  // if (factory != null && factory.totalVolumeUSD != null && tradeRecord != null && tradeRecord.amountUSD != null){
+  //   factory.totalVolumeUSD = factory.totalVolumeUSD.plus(tradeRecord.amountUSD)
+  //   factory.save()
+  // }
 }
