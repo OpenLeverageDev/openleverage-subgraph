@@ -9,6 +9,7 @@ export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
 export const FACTORY_ADDRESS_V2 = '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f'
 export const FACTORY_ADDRESS_V3 = '0x1f98431c8ad98523631ae4a59f267346ea31f984'
 export const DEX_AGG_ADDRESS = '0xd78b5db4aec619779b4c7d1ab99e290e6347d66a'
+export const FACTORY_ID = "1"
 
 export let ZERO_BI = BigInt.fromI32(0)
 export let ONE_BI = BigInt.fromI32(1)

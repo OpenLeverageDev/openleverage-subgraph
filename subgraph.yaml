@@ -97,4 +97,4 @@ dataSources:
           handler: handleMarginTrade
         - event: TradeClosed(address,uint16,bool,bool,uint256,uint256,uint256,uint256,uint256,uint32)
           handler: handleTradeClosed
-      file: ./src/mapping/lever.ts
+      file: ./src/mapping/openlev.ts
