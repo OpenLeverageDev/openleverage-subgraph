@@ -1,0 +1,7 @@
+{
+    "network": "bsc",
+    "startBlock": "13754726",
+    "lpool_address": "0xe9e2c2304cfdf9c2cc9e0e7fa66b5737aea98429",
+    "controller_address": "0x0eabe8e34a1fae4601953667f811acb9ff808e78",
+    "lever_address": "0x03bf707deb2808f711bb0086fc17c5cafa6e8aaf"
+}
