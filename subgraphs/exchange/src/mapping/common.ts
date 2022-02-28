@@ -106,8 +106,7 @@ export function exponentToBigDecimal(decimals: BigInt): BigDecimal {
     return bd
 }
 
-
-export function fetchLiquidityOnPool(tokenAddress: Address){
+export function fetchLiquidityOnPool(tokenAddress: Address): BigInt {
       const pool = LPool.bind(tokenAddress);
       const poolLiquidity =  pool.balanceOf(tokenAddress);
       return poolLiquidity;
