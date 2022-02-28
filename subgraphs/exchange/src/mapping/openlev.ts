@@ -9,7 +9,7 @@ import { Market, Pair, Token, TradeRecord} from "../../generated/schema";
 import {convertTokenToDecimal, fetchLiquidityOnPool} from "./common";
 import {findTokenUSDCPrice} from "./pricing";
 
-function getLiquidityOnPool(pair: Pair){
+function getLiquidityOnPool(pair: Pair): void{
     const pool0Liquidity = fetchLiquidityOnPool(Address.fromString(pair.pool0));
     log.info('balance of pool0 == ', [pool0Liquidity.toString()]);
     pair.reserve0 = new BigDecimal(pool0Liquidity);

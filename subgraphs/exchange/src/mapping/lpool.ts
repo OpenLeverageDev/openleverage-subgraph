@@ -18,7 +18,7 @@ function getLiquidityOnPool(address: Address): void {
   if(!poolModel || !poolModel.marketId){
     return;
   }
-  const market =  Market.load(poolModel.marketId) || "";
+  const market =  Market.load(poolModel.marketId);
 
   if(!market || !market.pair){
     return;
