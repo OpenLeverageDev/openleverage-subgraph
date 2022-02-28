@@ -12,11 +12,11 @@ import { fetchLiquidityOnPool } from "./common";
 import { Pair, Pool, Market } from "../../generated/schema";
 
 const getLiquidityOnPool = (address: Address) => {
-  let poolLiquidity = fetchLiquidityOnPool(address);
+  const poolLiquidity = fetchLiquidityOnPool(address);
   const poolModel = Pool.load(address.toString());
   const market = Market.load(poolModel.marketId);
 
-  let pair = Pair.load(market.pair);
+  const pair = Pair.load(market.pair);
   if (!pair) {
     log.error('no found the pair', [address.toString()]);
     return;
