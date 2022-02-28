@@ -20,10 +20,10 @@ export class TokenDefinition {
 
   // Get all tokens with a static defintion
   static getStaticDefinitions(): Array<TokenDefinition> {
-    let staticDefinitions = new Array<TokenDefinition>()
+    const staticDefinitions = new Array<TokenDefinition>()
 
     // the first token is USDC
-    let tokenUSDC = new TokenDefinition(
+    const tokenUSDC = new TokenDefinition(
         Address.fromString('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'),
         'USDC',
         BigInt.fromI32(1),
@@ -31,7 +31,7 @@ export class TokenDefinition {
     )
     staticDefinitions.push(tokenUSDC)
 
-    let tokenFEI = new TokenDefinition(
+    const tokenFEI = new TokenDefinition(
         Address.fromString('0x956f47f50a910163d8bf957cf5846d573e7f87ca'),
         'FEI',
         BigInt.fromI32(1),
@@ -39,7 +39,7 @@ export class TokenDefinition {
     )
     staticDefinitions.push(tokenFEI)
 
-    let tokenETH = new TokenDefinition(
+    const tokenETH = new TokenDefinition(
         Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'),
         'tokenETH',
         BigInt.fromI32(1),
@@ -47,7 +47,7 @@ export class TokenDefinition {
     )
     staticDefinitions.push(tokenETH)
 
-    let tokenWBTC = new TokenDefinition(
+    const tokenWBTC = new TokenDefinition(
         Address.fromString('0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'),
         'WBTC',
         BigInt.fromI32(1),
@@ -55,7 +55,7 @@ export class TokenDefinition {
     )
     staticDefinitions.push(tokenWBTC)
 
-    let tokenWUSDT = new TokenDefinition(
+    const tokenWUSDT = new TokenDefinition(
         Address.fromString('0xa47c8bf37f92abed4a126bda807a7b7498661acd'),
         'WUSDT',
         BigInt.fromI32(33554932),
@@ -63,7 +63,7 @@ export class TokenDefinition {
     )
     staticDefinitions.push(tokenWUSDT)
 
-    let tokenOHM2 = new TokenDefinition(
+    const tokenOHM2 = new TokenDefinition(
         Address.fromString('0x853d955acef822db058eb8505911ed77f175b99e'),
         'FRAX',
         BigInt.fromI32(1),
@@ -71,7 +71,7 @@ export class TokenDefinition {
     )
     staticDefinitions.push(tokenOHM2)
 
-    let tokenUSDT = new TokenDefinition(
+    const tokenUSDT = new TokenDefinition(
         Address.fromString('0xdac17f958d2ee523a2206206994597c13d831ec7'),
         'USDT',
         BigInt.fromI32(1),
@@ -79,7 +79,7 @@ export class TokenDefinition {
     )
     staticDefinitions.push(tokenUSDT)
 
-    let tokenDAI = new TokenDefinition(
+    const tokenDAI = new TokenDefinition(
         Address.fromString('0x6b175474e89094c44da98b954eedeac495271d0f'),
         'DAI',
         BigInt.fromI32(1),
@@ -92,12 +92,12 @@ export class TokenDefinition {
 
   // Helper for hardcoded tokens
   static fromAddress(tokenAddress: Address): TokenDefinition | null {
-    let staticDefinitions = this.getStaticDefinitions()
-    let tokenAddressHex = tokenAddress.toHexString()
+    const staticDefinitions = this.getStaticDefinitions()
+    const tokenAddressHex = tokenAddress.toHexString()
 
     // Search the definition using the address
     for (let i = 0; i < staticDefinitions.length; i++) {
-      let staticDefinition = staticDefinitions[i]
+      const staticDefinition = staticDefinitions[i]
       if (staticDefinition.address.toHexString() == tokenAddressHex) {
         return staticDefinition
       }
@@ -107,8 +107,8 @@ export class TokenDefinition {
   }
 
   static getAllBaseAddress(): string[] {
-    let result: string[] = []
-    let staticDefinitions = this.getStaticDefinitions()
+    const result: string[] = []
+    const staticDefinitions = this.getStaticDefinitions()
     for (let i = 0; i < staticDefinitions.length; i++) {
       result[i] = staticDefinitions[i].address.toHexString()
     }

@@ -11,7 +11,7 @@ import {
 import { fetchLiquidityOnPool } from "./common";
 import { Pair, Pool, Market } from "../../generated/schema";
 
-const getLiquidityOnPool = (address: Address) => {
+function getLiquidityOnPool(address: Address) {
   const poolLiquidity = fetchLiquidityOnPool(address);
   const poolModel = Pool.load(address.toString());
   const market = Market.load(poolModel.marketId);
@@ -31,31 +31,31 @@ const getLiquidityOnPool = (address: Address) => {
 export function handleBorrow(event: Borrow): void {
   try {
     getLiquidityOnPool(event.address);
-  } catch (err) {
-    log.info('lpool Borrow event', err);
+  } catch (error:any) {
+    log.info('lpool Borrow event', error.message);
   }
 }
 
 export function handleMint(event: Mint): void {
   try {
     getLiquidityOnPool(event.address);
-  } catch (err) {
-    log.info('lpool Mint event', err);
+  } catch (error:any) {
+    log.info('lpool Mint event', error.message);
   }
 }
 
 export function handleRedeem(event: Redeem): void {
   try {
     getLiquidityOnPool(event.address);
-  } catch (err) {
-    log.info('lpool Redeem event', err);
+  } catch (error:any) {
+    log.info('lpool Redeem event', error.message);
   }
 }
 
-export function handleRepayBorrow(event: RepayBorrow): void { }
+// export function handleRepayBorrow(event: RepayBorrow): void { }
 
-export function handleReservesAdded(event: ReservesAdded): void { }
+// export function handleReservesAdded(event: ReservesAdded): void { }
 
-export function handleReservesReduced(event: ReservesReduced): void { }
+// export function handleReservesReduced(event: ReservesReduced): void { }
 
-export function handleTransfer(event: Transfer): void { }
+// export function handleTransfer(event: Transfer): void { }
