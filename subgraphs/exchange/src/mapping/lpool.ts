@@ -14,18 +14,18 @@ import { Pair, Pool, Market } from "../../generated/schema";
 function getLiquidityOnPool(address: Address): void {
   const poolLiquidity = fetchLiquidityOnPool(address);
   const poolModel = Pool.load(address.toString());
-  const market = poolModel.marketId && Market.load(poolModel.marketId) || null;
+  const market = poolModel && poolModel.marketId && Market.load(poolModel.marketId) || "";
 
-  const pair = market && Pair.load(market.pair) || null;
+  const pair = market && Pair.load(market.pair) || "";
   if (!pair) {
     log.error('no found the pair', [address.toString()]);
     return;
   }
 
-  if (pair.pool0 == address.toString()) {
-    pair.reserve0 = new BigDecimal(poolLiquidity);
+  if (pair.pool0.toString() == address.toString()) {
+    pair.reserve0 = BigDecimal.fromString(poolLiquidity.toString());
   } else {
-    pair.reserve1 = new BigDecimal(poolLiquidity);
+    pair.reserve1 = BigDecimal.fromString(poolLiquidity.toString());
   }
 }
 export function handleBorrow(event: Borrow): void {
