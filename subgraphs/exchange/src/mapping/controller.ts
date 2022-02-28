@@ -92,7 +92,7 @@ export function handleLPoolPairCreated(event: LPoolPairCreated): void {
   const dexStr = dex.toString()
   const dexName = BigInt.fromString(dexStr.indexOf(".") > 0 ? dexStr.substr(0, dexStr.length -2) : dexStr)
   log.info("dexData to dexName, dexData={}, dexName={}", [dex.toString(), dexName.toString()])
-  const pair = new Pair(event.params.marketId.toString()) as Pair
+  const pair = new Pair(BigInt.fromI32(event.params.marketId).toString()) as Pair
   pair.token0 = token0.id
   pair.token1 = token1.id
   pair.isV2 = isV2
@@ -116,18 +116,18 @@ export function handleLPoolPairCreated(event: LPoolPairCreated): void {
   pair.token0Price = ZERO_BD
   pair.token1Price = ZERO_BD
 
-  const market = new Market(event.params.marketId.toString()) as Market
+  const market = new Market(BigInt.fromI32(event.params.marketId).toString()) as Market
   market.pair = pair.id
   market.isV2 = isV2
 
   const pool0 = new Pool(event.params.pool0.toHexString());
-  pool0.marketId = event.params.marketId.toString();
+  pool0.marketId = BigInt.fromI32(event.params.marketId).toString();
   pool0.token0 = token0.id;
   pool0.token1 = token1.id;
   pool0.totalLiquidity = ZERO_BD;
 
   const pool1 = new Pool(event.params.pool1.toHexString());
-  pool1.marketId = event.params.marketId.toString();
+  pool1.marketId = BigInt.fromI32(event.params.marketId).toString();
   pool1.token0 = token0.id;
   pool1.token1 = token1.id;
   pool1.totalLiquidity = ZERO_BD;

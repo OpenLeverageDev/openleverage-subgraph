@@ -1,4 +1,4 @@
-import {BigDecimal, log, Address} from "@graphprotocol/graph-ts"
+import {BigDecimal, log, BigInt, Address} from "@graphprotocol/graph-ts"
 import {
   Liquidation,
   MarginTrade,
@@ -27,9 +27,9 @@ export function handleMarginTrade(event: MarginTrade): void {
   log.info("start handleMarginTrade ", [event.block.number.toString()])
   const id = event.transaction.hash.toHexString() + "_" + "marginTrade"
   let tradeRecord = TradeRecord.load(id)
-  const market = Market.load(event.params.marketId.toString())
+  const market = Market.load(BigInt.fromI32(event.params.marketId).toString())
   if (!market) {
-    log.error("handle marginTrade event error, market is null" , [event.params.marketId.toString()])
+    log.error("handle marginTrade event error, market is null" , [BigInt.fromI32(event.params.marketId).toString()])
     return;
   }
   const pairId = market.pair
@@ -54,9 +54,9 @@ export function handleMarginTrade(event: MarginTrade): void {
     return;
   }
   tradeRecord.amount = convertTokenToDecimal(event.params.held, token.decimals)
-  tradeRecord.amountUSD = tradeRecord.amount.times(findTokenUSDCPrice(token, quoteToken , pair.dexName))
+  tradeRecord.amountUSD = tradeRecord.amount.times(findTokenUSDCPrice(<Token>token, <Token>quoteToken , pair.dexName))
   tradeRecord.save()
-  getLiquidityOnPool(pair);
+  getLiquidityOnPool(<Pair>pair);
   // let factory = Factory.load(FACTORY_ID)
   // if (factory != null && factory.totalVolumeUSD != null && tradeRecord != null && tradeRecord.amountUSD != null){
   //   factory.totalVolumeUSD = factory.totalVolumeUSD.plus(tradeRecord.amountUSD)
@@ -67,9 +67,9 @@ export function handleMarginTrade(event: MarginTrade): void {
 export function handleTradeClosed(event: TradeClosed): void {
   const id = event.transaction.hash.toHexString() + "_" + "tradeClosed"
   let tradeRecord = TradeRecord.load(id)
-  const market = Market.load(event.params.marketId.toString())
+  const market = Market.load(BigInt.fromI32(event.params.marketId).toString())
   if (!market) {
-    log.error("handle TradeClosed event error, market is null", [event.params.marketId.toString()])
+    log.error("handle TradeClosed event error, market is null", [BigInt.fromI32(event.params.marketId).toString()])
     return;
   }
   const pairId = market.pair
@@ -94,9 +94,9 @@ export function handleTradeClosed(event: TradeClosed): void {
     return;
   }
   tradeRecord.amount = convertTokenToDecimal(event.params.closeAmount, token.decimals)
-  tradeRecord.amountUSD = tradeRecord.amount.times(findTokenUSDCPrice(token, quoteToken , pair.dexName))
+  tradeRecord.amountUSD = tradeRecord.amount.times(findTokenUSDCPrice(<Token>token, <Token>quoteToken , pair.dexName))
   tradeRecord.save();
-  getLiquidityOnPool(pair);
+  getLiquidityOnPool(<Pair>pair);
   // let factory = Factory.load(FACTORY_ID)
   // if (factory != null && factory.totalVolumeUSD != null && tradeRecord != null && tradeRecord.amountUSD != null){
   //   factory.totalVolumeUSD = factory.totalVolumeUSD.plus(tradeRecord.amountUSD)

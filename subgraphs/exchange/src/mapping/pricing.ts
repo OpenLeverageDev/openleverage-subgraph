@@ -44,10 +44,9 @@ export function findTokenUSDCPrice(token: Token, quoteToken: Token, dexName: Big
 }
 
 export function getPrice(baseToken: Address, baseDecimal: BigInt, quoteToken: Address, quoteDecimal: BigInt, dexName: BigInt): BigDecimal {
-  const dexData = Bytes.fromByteArray(Bytes.fromHexString("0" + dexName.toHexString().replace("0x","")));
-  const result = dexContract.getPrice(baseToken, quoteToken, dexData)
+  let dexData = Bytes.fromByteArray(Bytes.fromHexString("0" + dexName.toHexString().replace("0x","")));
+  let result = dexContract.getPrice(baseToken, quoteToken, dexData)
   log.info("getPrice end ,baseToken: {}, baseDecimal: {}, quoteToken: {}, quoteDecimal: {}, dexName: {}， dexData:{}, dexDataHexStr={},res0 = {}, res1 = {}", [baseToken.toHexString(), baseDecimal.toString(), quoteToken.toHexString(), quoteDecimal.toString(), dexName.toString(), dexData.toString(), dexData.toHexString(), result.value0.toString(), result.value1.toString()])
   return result.value0.toBigDecimal().div(convertTokenToDecimal(ONE_BI, baseDecimal.minus(quoteDecimal))).times(convertTokenToDecimal(ONE_BI, BigInt.fromI32(result.value1)))
 }
-
 
