@@ -10,7 +10,6 @@ import {convertTokenToDecimal, fetchLiquidityOnPool} from "./common";
 import {findTokenUSDCPrice} from "./pricing";
 
 function getLiquidityOnPool(pair: Pair){
-  try {
     const pool0Liquidity = fetchLiquidityOnPool(Address.fromString(pair.pool0));
     log.info('balance of pool0 == ', [pool0Liquidity.toString()]);
     pair.reserve0 = new BigDecimal(pool0Liquidity);
@@ -20,10 +19,6 @@ function getLiquidityOnPool(pair: Pair){
     pair.reserve1 = new BigDecimal(pool1Liquidity);
 
     pair.save();
-
-  } catch(error:any){
-    log.error('get liquidity err', error.message);
-  }
 }
 
 // export function handleLiquidation(event: Liquidation): void {}

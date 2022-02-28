@@ -11,7 +11,7 @@ import {
 import { fetchLiquidityOnPool } from "./common";
 import { Pair, Pool, Market } from "../../generated/schema";
 
-function getLiquidityOnPool(address: Address) {
+function getLiquidityOnPool(address: Address): void {
   const poolLiquidity = fetchLiquidityOnPool(address);
   const poolModel = Pool.load(address.toString());
   const market = Market.load(poolModel.marketId);
@@ -29,27 +29,15 @@ function getLiquidityOnPool(address: Address) {
   }
 }
 export function handleBorrow(event: Borrow): void {
-  try {
     getLiquidityOnPool(event.address);
-  } catch (error:any) {
-    log.info('lpool Borrow event', error.message);
-  }
 }
 
 export function handleMint(event: Mint): void {
-  try {
     getLiquidityOnPool(event.address);
-  } catch (error:any) {
-    log.info('lpool Mint event', error.message);
-  }
 }
 
 export function handleRedeem(event: Redeem): void {
-  try {
     getLiquidityOnPool(event.address);
-  } catch (error:any) {
-    log.info('lpool Redeem event', error.message);
-  }
 }
 
 // export function handleRepayBorrow(event: RepayBorrow): void { }
