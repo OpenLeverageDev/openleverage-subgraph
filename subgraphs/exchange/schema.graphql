@@ -326,3 +326,16 @@ type Market @entity {
   isV2: Boolean!
 }
 
+
+type Pool @entity {
+  # pool address
+  id: ID!
+  marketId: String!
+
+  token0: Token!
+  token1: Token!
+
+  totalLiquidity: BigDecimal!
+
+}
+

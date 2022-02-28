@@ -3,6 +3,9 @@ import {Controller} from "../../generated/Controller/Controller";
 import {ERC20} from "../../generated/Controller/ERC20";
 import {ERC20SymbolBytes} from "../../generated/Controller/ERC20SymbolBytes";
 import {ERC20NameBytes} from "../../generated/Controller/ERC20NameBytes";
+import {
+    LPool
+  } from "../../generated/LPool/LPool";
 
 
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
@@ -104,6 +107,15 @@ export function exponentToBigDecimal(decimals: BigInt): BigDecimal {
 }
 
 
-
+export const fetchLiquidityOnPool = (tokenAddress: Address)=>{
+    try {
+      let pool = LPool.bind(tokenAddress);
+      const poolLiquidity =  pool.balanceOf(tokenAddress);
+      return poolLiquidity;
+  
+    } catch(err){
+      log.error('get liquidity err', err);
+    }
+}
 
 

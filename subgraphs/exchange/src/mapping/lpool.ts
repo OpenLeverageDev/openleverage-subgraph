@@ -1,6 +1,5 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { log, BigDecimal, Address } from "@graphprotocol/graph-ts"
 import {
-  LPool,
   Borrow,
   Mint,
   Redeem,
@@ -9,17 +8,54 @@ import {
   ReservesReduced,
   Transfer
 } from "../../generated/LPool/LPool"
+import { fetchLiquidityOnPool } from "./common";
+import { Pair, Pool, Market } from "../../generated/schema";
 
-export function handleBorrow(event: Borrow): void {}
+const getLiquidityOnPool = (address: Address) => {
+  let poolLiquidity = fetchLiquidityOnPool(address);
+  const poolModel = Pool.load(address.toString());
+  const market = Market.load(poolModel.marketId);
 
-export function handleMint(event: Mint): void {}
+  let pair = Pair.load(market.pair);
+  if (!pair) {
+    log.error('no found the pair', [address.toString()]);
+    return;
+  }
 
-export function handleRedeem(event: Redeem): void {}
+  if (pair.pool0 == address.toString()) {
+    pair.reserve0 = new BigDecimal(poolLiquidity);
+  } else {
+    pair.reserve1 = new BigDecimal(poolLiquidity);
+  }
+}
+export function handleBorrow(event: Borrow): void {
+  try {
+    getLiquidityOnPool(event.address);
+  } catch (err) {
+    log.info('lpool Borrow event', err);
+  }
+}
 
-export function handleRepayBorrow(event: RepayBorrow): void {}
+export function handleMint(event: Mint): void {
+  try {
+    getLiquidityOnPool(event.address);
+  } catch (err) {
+    log.info('lpool Mint event', err);
+  }
+}
 
-export function handleReservesAdded(event: ReservesAdded): void {}
+export function handleRedeem(event: Redeem): void {
+  try {
+    getLiquidityOnPool(event.address);
+  } catch (err) {
+    log.info('lpool Redeem event', err);
+  }
+}
 
-export function handleReservesReduced(event: ReservesReduced): void {}
+export function handleRepayBorrow(event: RepayBorrow): void { }
 
-export function handleTransfer(event: Transfer): void {}
+export function handleReservesAdded(event: ReservesAdded): void { }
+
+export function handleReservesReduced(event: ReservesReduced): void { }
+
+export function handleTransfer(event: Transfer): void { }

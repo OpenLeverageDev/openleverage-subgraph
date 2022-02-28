@@ -1,13 +1,30 @@
-import {BigDecimal, log, BigInt, ValueKind} from "@graphprotocol/graph-ts"
+import {BigDecimal, log, Address} from "@graphprotocol/graph-ts"
 import {
-  Lever,
   Liquidation,
   MarginTrade,
   TradeClosed
-} from "../../generated/Lever/Lever"
-import {Bundle, Factory, Market, Pair, Token, TradeRecord} from "../../generated/schema";
-import {convertTokenToDecimal, FACTORY_ID} from "./common";
+} from "../../generated/Lever/Lever";
+
+import { Market, Pair, Token, TradeRecord} from "../../generated/schema";
+import {convertTokenToDecimal, fetchLiquidityOnPool} from "./common";
 import {findTokenUSDCPrice} from "./pricing";
+
+const getLiquidityOnPool = (pair: Pair)=>{
+  try {
+    let pool0Liquidity = fetchLiquidityOnPool(Address.fromString(pair.pool0));
+    log.info('balance of pool0 == ', [pool0Liquidity.toString()]);
+    pair.reserve0 = new BigDecimal(pool0Liquidity);
+
+    let pool1Liquidity = fetchLiquidityOnPool(Address.fromString(pair.pool1));
+    log.info('balance of pool1 == ', [pool1Liquidity.toString()]);
+    pair.reserve1 = new BigDecimal(pool1Liquidity);
+
+    pair.save();
+
+  } catch(err){
+    log.error('get liquidity err', err);
+  }
+}
 
 export function handleLiquidation(event: Liquidation): void {}
 
@@ -44,6 +61,7 @@ export function handleMarginTrade(event: MarginTrade): void {
   tradeRecord.amount = convertTokenToDecimal(event.params.held, token.decimals)
   tradeRecord.amountUSD = tradeRecord.amount.times(findTokenUSDCPrice(token, quoteToken , pair.dexName))
   tradeRecord.save()
+  getLiquidityOnPool(pair);
   // let factory = Factory.load(FACTORY_ID)
   // if (factory != null && factory.totalVolumeUSD != null && tradeRecord != null && tradeRecord.amountUSD != null){
   //   factory.totalVolumeUSD = factory.totalVolumeUSD.plus(tradeRecord.amountUSD)
@@ -82,7 +100,8 @@ export function handleTradeClosed(event: TradeClosed): void {
   }
   tradeRecord.amount = convertTokenToDecimal(event.params.closeAmount, token.decimals)
   tradeRecord.amountUSD = tradeRecord.amount.times(findTokenUSDCPrice(token, quoteToken , pair.dexName))
-  tradeRecord.save()
+  tradeRecord.save();
+  getLiquidityOnPool(pair);
   // let factory = Factory.load(FACTORY_ID)
   // if (factory != null && factory.totalVolumeUSD != null && tradeRecord != null && tradeRecord.amountUSD != null){
   //   factory.totalVolumeUSD = factory.totalVolumeUSD.plus(tradeRecord.amountUSD)

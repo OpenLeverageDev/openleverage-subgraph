@@ -4,7 +4,7 @@ import {
   Controller,
   LPoolPairCreated,
 } from "../../generated/Controller/Controller"
-import {Bundle, Factory, Market, Pair, Token} from "../../generated/schema"
+import {Bundle, Factory, Market, Pair, Token, Pool} from "../../generated/schema"
 import { Factory as FactoryContract } from "../../generated/Controller/Factory"
 
 import {
@@ -89,15 +89,6 @@ export function handleLPoolPairCreated(event: LPoolPairCreated): void {
     token1.txCount = ZERO_BI
   }
 
-  // log.info("getPair start, token0={}, token1={}", [Address.fromString(token0.id).toHexString(), Address.fromString(token1.id).toHexString()])
-  // let pairId = ""
-  // if (isV2){
-  //   pairId = factoryContractV2.getPair(Address.fromString(token0.id), Address.fromString(token1.id)).toHexString()
-  // }else{
-  //   pairId = factoryContractV3.g(Address.fromString(token0.id), Address.fromString(token1.id)).toHexString()
-  // }
-  // log.info("getPair finish, token0={}, token1={}, pair address={}", [Address.fromString(token0.id).toHexString(), Address.fromString(token1.id).toHexString(), pairId])
-
   let dexStr = dex.toString()
   let dexName = BigInt.fromString(dexStr.indexOf(".") > 0 ? dexStr.substr(0, dexStr.length -2) : dexStr)
   log.info("dexData to dexName, dexData={}, dexName={}", [dex.toString(), dexName.toString()])
@@ -129,10 +120,27 @@ export function handleLPoolPairCreated(event: LPoolPairCreated): void {
   market.pair = pair.id
   market.isV2 = isV2
 
+  let pool0 = new Pool(event.params.pool0.toHexString());
+  pool0.marketId = event.params.marketId.toString();
+  pool0.token0 = token0.id;
+  pool0.token1 = token1.id;
+  pool0.totalLiquidity = ZERO_BD;
+
+  let pool1 = new Pool(event.params.pool1.toHexString());
+  pool1.marketId = event.params.marketId.toString();
+  pool1.token0 = token0.id;
+  pool1.token1 = token1.id;
+  pool1.totalLiquidity = ZERO_BD;
+
+
   // save updated values
   token0.save()
   token1.save()
   pair.save()
   market.save()
   factory.save()
+
+  pool0.save();
+  pool1.save();
+
 }
