@@ -76,7 +76,7 @@ export function fetchTokenTotalSupply(tokenAddress: Address): BigInt {
 }
 
 export function fetchTokenDecimals(tokenAddress: Address): BigInt {
-    let decimalValue = null
+    let decimalValue:i32
     const contract = ERC20.bind(tokenAddress)
 
     // try types uint8 for decimals

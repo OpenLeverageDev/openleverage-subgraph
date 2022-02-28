@@ -28,8 +28,8 @@ function getLiquidityOnPool(address: Address): void {
     log.error('no found the pair', [address.toString()]);
     return;
   }
-
-  if (pair.pool0 && pair.pool0.toString() == address.toString()) {
+  
+  if (pair.pool0.toString() === address.toString()) {
     pair.reserve0 = BigDecimal.fromString(poolLiquidity.toString());
   } else {
     pair.reserve1 = BigDecimal.fromString(poolLiquidity.toString());
