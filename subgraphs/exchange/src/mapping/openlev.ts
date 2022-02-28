@@ -10,12 +10,13 @@ import {convertTokenToDecimal, fetchLiquidityOnPool} from "./common";
 import {findTokenUSDCPrice} from "./pricing";
 
 function getLiquidityOnPool(pair: Pair): void{
+    log.debug('getLiquidityOnPool',[pair.pool0,pair.pool0])
     const pool0Liquidity = fetchLiquidityOnPool(Address.fromString(pair.pool0));
-    log.info('balance of pool0 == ', [pool0Liquidity.toString()]);
+    log.debug('balance of pool0 == ', [pool0Liquidity.toString()]);
     pair.reserve0 = new BigDecimal(pool0Liquidity);
 
     const pool1Liquidity = fetchLiquidityOnPool(Address.fromString(pair.pool1));
-    log.info('balance of pool1 == ', [pool1Liquidity.toString()]);
+    log.debug('balance of pool1 == ', [pool1Liquidity.toString()]);
     pair.reserve1 = new BigDecimal(pool1Liquidity);
 
     pair.save();
