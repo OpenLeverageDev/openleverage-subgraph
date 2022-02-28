@@ -9,35 +9,35 @@ import { Market, Pair, Token, TradeRecord} from "../../generated/schema";
 import {convertTokenToDecimal, fetchLiquidityOnPool} from "./common";
 import {findTokenUSDCPrice} from "./pricing";
 
-const getLiquidityOnPool = (pair: Pair)=>{
+function getLiquidityOnPool(pair: Pair){
   try {
-    let pool0Liquidity = fetchLiquidityOnPool(Address.fromString(pair.pool0));
+    const pool0Liquidity = fetchLiquidityOnPool(Address.fromString(pair.pool0));
     log.info('balance of pool0 == ', [pool0Liquidity.toString()]);
     pair.reserve0 = new BigDecimal(pool0Liquidity);
 
-    let pool1Liquidity = fetchLiquidityOnPool(Address.fromString(pair.pool1));
+    const pool1Liquidity = fetchLiquidityOnPool(Address.fromString(pair.pool1));
     log.info('balance of pool1 == ', [pool1Liquidity.toString()]);
     pair.reserve1 = new BigDecimal(pool1Liquidity);
 
     pair.save();
 
-  } catch(err){
-    log.error('get liquidity err', err);
+  } catch(error:any){
+    log.error('get liquidity err', error.message);
   }
 }
 
-export function handleLiquidation(event: Liquidation): void {}
+// export function handleLiquidation(event: Liquidation): void {}
 
 export function handleMarginTrade(event: MarginTrade): void {
   log.info("start handleMarginTrade ", [event.block.number.toString()])
-  let id = event.transaction.hash.toHexString() + "_" + "marginTrade"
+  const id = event.transaction.hash.toHexString() + "_" + "marginTrade"
   let tradeRecord = TradeRecord.load(id)
-  let market = Market.load(event.params.marketId.toString())
+  const market = Market.load(event.params.marketId.toString())
   if (!market) {
     log.error("handle marginTrade event error, market is null" , [event.params.marketId.toString()])
     return;
   }
-  let pairId = market.pair
+  const pairId = market.pair
   if (!tradeRecord) {
     tradeRecord = new TradeRecord(id)
     tradeRecord.pair = pairId
@@ -47,14 +47,14 @@ export function handleMarginTrade(event: MarginTrade): void {
     tradeRecord.transaction = event.transaction.hash.toHexString()
     tradeRecord.timestamp = event.block.timestamp
   }
-  let pair = Pair.load(pairId)
+  const pair = Pair.load(pairId)
   if (!pair){
     log.error("handle marginTrade event error, pair is null", [pairId])
     return;
   }
-  let tokenId = event.params.longToken ? pair.token1 : pair.token0
-  let token = Token.load(tokenId)
-  let quoteToken = Token.load(tokenId == pair.token0 ? pair.token1 : pair.token0)
+  const tokenId = event.params.longToken ? pair.token1 : pair.token0
+  const token = Token.load(tokenId)
+  const quoteToken = Token.load(tokenId == pair.token0 ? pair.token1 : pair.token0)
   if (!token || !quoteToken){
     return;
   }
@@ -70,14 +70,14 @@ export function handleMarginTrade(event: MarginTrade): void {
 }
 
 export function handleTradeClosed(event: TradeClosed): void {
-  let id = event.transaction.hash.toHexString() + "_" + "tradeClosed"
+  const id = event.transaction.hash.toHexString() + "_" + "tradeClosed"
   let tradeRecord = TradeRecord.load(id)
-  let market = Market.load(event.params.marketId.toString())
+  const market = Market.load(event.params.marketId.toString())
   if (!market) {
     log.error("handle TradeClosed event error, market is null", [event.params.marketId.toString()])
     return;
   }
-  let pairId = market.pair
+  const pairId = market.pair
   if (!tradeRecord) {
     tradeRecord = new TradeRecord(id)
     tradeRecord.pair = pairId
@@ -87,14 +87,14 @@ export function handleTradeClosed(event: TradeClosed): void {
     tradeRecord.transaction = event.transaction.hash.toHexString()
     tradeRecord.timestamp = event.block.timestamp
   }
-  let pair = Pair.load(pairId)
+  const pair = Pair.load(pairId)
   if (!pair){
     log.error("handle TradeClosed event error, pair is null", [pairId])
     return;
   }
-  let tokenId = event.params.longToken ? pair.token1 : pair.token0
-  let token = Token.load(tokenId)
-  let quoteToken = Token.load(tokenId == pair.token0 ? pair.token1 : pair.token0)
+  const tokenId = event.params.longToken ? pair.token1 : pair.token0
+  const token = Token.load(tokenId)
+  const quoteToken = Token.load(tokenId == pair.token0 ? pair.token1 : pair.token0)
   if (!token || !quoteToken){
     return;
   }

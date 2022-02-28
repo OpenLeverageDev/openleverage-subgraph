@@ -14,24 +14,24 @@ export const FACTORY_ADDRESS_V3 = '0x1f98431c8ad98523631ae4a59f267346ea31f984'
 export const DEX_AGG_ADDRESS = '0xd78b5db4aec619779b4c7d1ab99e290e6347d66a'
 export const FACTORY_ID = "1"
 
-export let ZERO_BI = BigInt.fromI32(0)
-export let ONE_BI = BigInt.fromI32(1)
-export let ZERO_BD = BigDecimal.fromString('0')
-export let ONE_BD = BigDecimal.fromString('1')
-export let BI_18 = BigInt.fromI32(18)
+export const ZERO_BI = BigInt.fromI32(0)
+export const ONE_BI = BigInt.fromI32(1)
+export const ZERO_BD = BigDecimal.fromString('0')
+export const ONE_BD = BigDecimal.fromString('1')
+export const BI_18 = BigInt.fromI32(18)
 
-export let factoryContractV2 = Controller.bind(Address.fromString(FACTORY_ADDRESS_V2))
-export let factoryContractV3 = Controller.bind(Address.fromString(FACTORY_ADDRESS_V3))
+export const factoryContractV2 = Controller.bind(Address.fromString(FACTORY_ADDRESS_V2))
+export const factoryContractV3 = Controller.bind(Address.fromString(FACTORY_ADDRESS_V3))
 
 export function fetchTokenSymbol(tokenAddress: Address): string {
     let symbolValue = 'unknown'
-    let contract = ERC20.bind(tokenAddress)
-    let contractSymbolBytes = ERC20SymbolBytes.bind(tokenAddress)
+    const contract = ERC20.bind(tokenAddress)
+    const contractSymbolBytes = ERC20SymbolBytes.bind(tokenAddress)
 
     // try types string and bytes32 for symbol
-    let symbolResult = contract.try_symbol()
+    const symbolResult = contract.try_symbol()
     if (symbolResult.reverted) {
-        let symbolResultBytes = contractSymbolBytes.try_symbol()
+        const symbolResultBytes = contractSymbolBytes.try_symbol()
         if (!symbolResultBytes.reverted) {
             // for broken pairs that have no symbol function exposed
             if (!isNullEthValue(symbolResultBytes.value.toHexString())) {
@@ -46,13 +46,13 @@ export function fetchTokenSymbol(tokenAddress: Address): string {
 
 export function fetchTokenName(tokenAddress: Address): string {
     let nameValue = 'unknown'
-    let contract = ERC20.bind(tokenAddress)
-    let contractNameBytes = ERC20NameBytes.bind(tokenAddress)
+    const contract = ERC20.bind(tokenAddress)
+    const contractNameBytes = ERC20NameBytes.bind(tokenAddress)
 
     // try types string and bytes32 for name
-    let nameResult = contract.try_name()
+    const nameResult = contract.try_name()
     if (nameResult.reverted) {
-        let nameResultBytes = contractNameBytes.try_name()
+        const nameResultBytes = contractNameBytes.try_name()
         if (!nameResultBytes.reverted) {
             // for broken exchanges that have no name function exposed
             if (!isNullEthValue(nameResultBytes.value.toHexString())) {
@@ -67,8 +67,8 @@ export function fetchTokenName(tokenAddress: Address): string {
 
 export function fetchTokenTotalSupply(tokenAddress: Address): BigInt {
     let totalSupplyValue = new BigInt(0)
-    let contract = ERC20.bind(tokenAddress)
-    let totalSupplyResult = contract.try_totalSupply()
+    const contract = ERC20.bind(tokenAddress)
+    const totalSupplyResult = contract.try_totalSupply()
     if (!totalSupplyResult.reverted) {
         totalSupplyValue = totalSupplyResult.value
     }
@@ -77,10 +77,10 @@ export function fetchTokenTotalSupply(tokenAddress: Address): BigInt {
 
 export function fetchTokenDecimals(tokenAddress: Address): BigInt {
     let decimalValue = null
-    let contract = ERC20.bind(tokenAddress)
+    const contract = ERC20.bind(tokenAddress)
 
     // try types uint8 for decimals
-    let decimalResult = contract.try_decimals()
+    const decimalResult = contract.try_decimals()
     if (!decimalResult.reverted) {
         decimalValue = decimalResult.value
     }
@@ -107,14 +107,14 @@ export function exponentToBigDecimal(decimals: BigInt): BigDecimal {
 }
 
 
-export const fetchLiquidityOnPool = (tokenAddress: Address)=>{
+export function fetchLiquidityOnPool(tokenAddress: Address){
     try {
-      let pool = LPool.bind(tokenAddress);
+      const pool = LPool.bind(tokenAddress);
       const poolLiquidity =  pool.balanceOf(tokenAddress);
       return poolLiquidity;
   
-    } catch(err){
-      log.error('get liquidity err', err);
+    } catch(error:any){
+      log.error('get liquidity err', error.message);
     }
 }
 

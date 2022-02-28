@@ -18,8 +18,8 @@ import {
 } from "./common";
 import {Bytes} from "@graphprotocol/graph-ts/index";
 
-export let factoryContractV2 = FactoryContract.bind(Address.fromString(FACTORY_ADDRESS_V2))
-export let factoryContractV3 = FactoryContract.bind(Address.fromString(FACTORY_ADDRESS_V3))
+export const factoryContractV2 = FactoryContract.bind(Address.fromString(FACTORY_ADDRESS_V2))
+export const factoryContractV3 = FactoryContract.bind(Address.fromString(FACTORY_ADDRESS_V3))
 
 export function handleLPoolPairCreated(event: LPoolPairCreated): void {
   let factory = Factory.load(FACTORY_ID)
@@ -36,8 +36,8 @@ export function handleLPoolPairCreated(event: LPoolPairCreated): void {
   factory.pairCount = factory.pairCount + 1
 
   // v2 or v3
-  let dex = parseInt(event.params.dexData.toHexString())
-  let isV2 = dex < 255
+  const dex = parseInt(event.params.dexData.toHexString())
+  const isV2 = dex < 255
   log.info("handleLPoolPairCreated dexData = {}, dex = {}, isV2 = {}", [event.params.dexData.toHexString(), dex.toString(), isV2.toString()])
 
   // create the tokens
@@ -50,7 +50,7 @@ export function handleLPoolPairCreated(event: LPoolPairCreated): void {
     token0.symbol = fetchTokenSymbol(event.params.token0)
     token0.name = fetchTokenName(event.params.token0)
     token0.totalSupply = fetchTokenTotalSupply(event.params.token0)
-    let decimals = fetchTokenDecimals(event.params.token0)
+    const decimals = fetchTokenDecimals(event.params.token0)
 
     // bail if we couldn't figure out the decimals
     if (decimals === null) {
@@ -73,7 +73,7 @@ export function handleLPoolPairCreated(event: LPoolPairCreated): void {
     token1.symbol = fetchTokenSymbol(event.params.token1)
     token1.name = fetchTokenName(event.params.token1)
     token1.totalSupply = fetchTokenTotalSupply(event.params.token1)
-    let decimals = fetchTokenDecimals(event.params.token1)
+    const decimals = fetchTokenDecimals(event.params.token1)
 
     // bail if we couldn't figure out the decimals
     if (decimals === null) {
@@ -89,10 +89,10 @@ export function handleLPoolPairCreated(event: LPoolPairCreated): void {
     token1.txCount = ZERO_BI
   }
 
-  let dexStr = dex.toString()
-  let dexName = BigInt.fromString(dexStr.indexOf(".") > 0 ? dexStr.substr(0, dexStr.length -2) : dexStr)
+  const dexStr = dex.toString()
+  const dexName = BigInt.fromString(dexStr.indexOf(".") > 0 ? dexStr.substr(0, dexStr.length -2) : dexStr)
   log.info("dexData to dexName, dexData={}, dexName={}", [dex.toString(), dexName.toString()])
-  let pair = new Pair(event.params.marketId.toString()) as Pair
+  const pair = new Pair(event.params.marketId.toString()) as Pair
   pair.token0 = token0.id
   pair.token1 = token1.id
   pair.isV2 = isV2
@@ -116,17 +116,17 @@ export function handleLPoolPairCreated(event: LPoolPairCreated): void {
   pair.token0Price = ZERO_BD
   pair.token1Price = ZERO_BD
 
-  let market = new Market(event.params.marketId.toString()) as Market
+  const market = new Market(event.params.marketId.toString()) as Market
   market.pair = pair.id
   market.isV2 = isV2
 
-  let pool0 = new Pool(event.params.pool0.toHexString());
+  const pool0 = new Pool(event.params.pool0.toHexString());
   pool0.marketId = event.params.marketId.toString();
   pool0.token0 = token0.id;
   pool0.token1 = token1.id;
   pool0.totalLiquidity = ZERO_BD;
 
-  let pool1 = new Pool(event.params.pool1.toHexString());
+  const pool1 = new Pool(event.params.pool1.toHexString());
   pool1.marketId = event.params.marketId.toString();
   pool1.token0 = token0.id;
   pool1.token1 = token1.id;
