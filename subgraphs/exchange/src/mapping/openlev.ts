@@ -10,22 +10,27 @@ import {convertTokenToDecimal, fetchLiquidityOnPool} from "./common";
 import {findTokenUSDCPrice} from "./pricing";
 
 function getLiquidityOnPool(pair: Pair): void{
-    log.debug('getLiquidityOnPool',[pair.pool0,pair.pool0])
-    const pool0Liquidity = fetchLiquidityOnPool(Address.fromString(pair.pool0));
-    log.debug('balance of pool0 == ', [pool0Liquidity.toString()]);
-    pair.reserve0 = new BigDecimal(pool0Liquidity);
+    const pool0Liquidity = fetchLiquidityOnPool(Address.fromString(pair.token0),Address.fromString(pair.pool0));
+    const token0 = Token.load(pair.token0);
+    if(!token0){
+      return;
+    }
+    pair.reserve0 = convertTokenToDecimal(pool0Liquidity,token0.decimals);
 
-    const pool1Liquidity = fetchLiquidityOnPool(Address.fromString(pair.pool1));
-    log.debug('balance of pool1 == ', [pool1Liquidity.toString()]);
-    pair.reserve1 = new BigDecimal(pool1Liquidity);
+    const pool1Liquidity = fetchLiquidityOnPool(Address.fromString(pair.token1),Address.fromString(pair.pool1));
+    const token1 = Token.load(pair.token1);
+    if(!token1){
+      return;
+    }
+    pair.reserve1 = convertTokenToDecimal(pool1Liquidity,token1.decimals);
 
     pair.save();
 }
 
-// export function handleLiquidation(event: Liquidation): void {}
+export function handleLiquidation(event: Liquidation): void {}
 
 export function handleMarginTrade(event: MarginTrade): void {
-  log.info("start handleMarginTrade ", [event.block.number.toString()])
+  log.info("start handleMarginTrade {}", [event.block.number.toString()])
   const id = event.transaction.hash.toHexString() + "_" + "marginTrade"
   let tradeRecord = TradeRecord.load(id)
   const market = Market.load(BigInt.fromI32(event.params.marketId).toString())
@@ -58,6 +63,13 @@ export function handleMarginTrade(event: MarginTrade): void {
   tradeRecord.amountUSD = tradeRecord.amount.times(findTokenUSDCPrice(<Token>token, <Token>quoteToken , pair.dexName))
   tradeRecord.save()
   getLiquidityOnPool(<Pair>pair);
+  if((event.params.token0Price).isZero()){
+    return;
+  }
+  pair.token0Price = convertTokenToDecimal(event.params.token0Price,token.decimals);
+  log.debug('handleTradeClosed token0Price: {} ',[(pair.token0Price).toString()])
+  pair.token1Price = (BigDecimal.fromString("1").div(pair.token0Price));
+  pair.save();
   // let factory = Factory.load(FACTORY_ID)
   // if (factory != null && factory.totalVolumeUSD != null && tradeRecord != null && tradeRecord.amountUSD != null){
   //   factory.totalVolumeUSD = factory.totalVolumeUSD.plus(tradeRecord.amountUSD)
@@ -98,6 +110,14 @@ export function handleTradeClosed(event: TradeClosed): void {
   tradeRecord.amountUSD = tradeRecord.amount.times(findTokenUSDCPrice(<Token>token, <Token>quoteToken , pair.dexName))
   tradeRecord.save();
   getLiquidityOnPool(<Pair>pair);
+  
+  if((event.params.token0Price).isZero()){
+    return;
+  }
+  pair.token0Price = convertTokenToDecimal(event.params.token0Price,token.decimals);
+  log.debug('handleTradeClosed token0Price: {} ',[(pair.token0Price).toString()])
+  pair.token1Price = (BigDecimal.fromString("1").div(pair.token0Price));
+  pair.save();
   // let factory = Factory.load(FACTORY_ID)
   // if (factory != null && factory.totalVolumeUSD != null && tradeRecord != null && tradeRecord.amountUSD != null){
   //   factory.totalVolumeUSD = factory.totalVolumeUSD.plus(tradeRecord.amountUSD)

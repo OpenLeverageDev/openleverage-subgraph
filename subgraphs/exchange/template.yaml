@@ -23,7 +23,9 @@ dataSources:
         - Transfer
       abis:
         - name: LPool
-          file: ./src/abis/LPool.json
+          file: ./abiss/LPool.json
+        - name: ERC20
+          file: ./abiss/ERC20.json
       eventHandlers:
         - event: Approval(indexed address,indexed address,uint256)
           handler: handleApproval
@@ -57,15 +59,17 @@ dataSources:
         - LPoolPairCreated
       abis:
         - name: Controller
-          file: ./src/abis/Controller.json
+          file: ./abiss/Controller.json
         - name: Factory
-          file: ./src/abis/Factory.json
+          file: ./abiss/Factory.json
         - name: ERC20
-          file: ./src/abis/ERC20.json
+          file: ./abiss/ERC20.json
         - name: ERC20SymbolBytes
-          file: ./src/abis/ERC20SymbolBytes.json
+          file: ./abiss/ERC20SymbolBytes.json
         - name: ERC20NameBytes
-          file: ./src/abis/ERC20NameBytes.json
+          file: ./abiss/ERC20NameBytes.json
+        - name: LPool
+          file: ./abis/LPool.json
       eventHandlers:
         - event: LPoolPairCreated(address,address,address,address,uint16,uint16,bytes)
           handler: handleLPoolPairCreated
@@ -87,9 +91,13 @@ dataSources:
         - TradeClosed
       abis:
         - name: Lever
-          file: ./src/abis/Lever.json
+          file: ./abis/Lever.json
         - name: Dex
-          file: ./src/abis/Dex.json
+          file: ./abis/Dex.json
+        - name: LPool
+          file: ./abis/LPool.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: Liquidation(address,uint16,bool,bool,uint256,uint256,address,uint256,uint256,uint256,uint256,uint256,uint32)
           handler: handleLiquidation
