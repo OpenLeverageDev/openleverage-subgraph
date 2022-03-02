@@ -1,5 +1,6 @@
 import { log, BigDecimal, Address } from "@graphprotocol/graph-ts"
 import {
+  Approval,
   Borrow,
   Mint,
   Redeem,
@@ -55,6 +56,9 @@ export function handleMint(event: Mint): void {
 export function handleRedeem(event: Redeem): void {
     getLiquidityOnPool(event.address);
 }
+
+
+export function handleApproval(event: Approval): void { }
 
 export function handleRepayBorrow(event: RepayBorrow): void { }
 

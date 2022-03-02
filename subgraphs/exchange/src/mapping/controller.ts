@@ -4,11 +4,10 @@ import {
   Controller,
   LPoolPairCreated,
 } from "../../generated/Controller/Controller"
-import {Bundle, Factory, Market, Pair, Token, Pool} from "../../generated/schema"
-import { Factory as FactoryContract } from "../../generated/Controller/Factory"
+import { Factory, Market, Pair, Token, Pool} from "../../generated/schema"
 
 import {
-  FACTORY_ADDRESS_V2, FACTORY_ADDRESS_V3, FACTORY_ID,
+  FACTORY_ID,
   fetchTokenDecimals,
   fetchTokenName,
   fetchTokenSymbol,
@@ -16,10 +15,7 @@ import {
   ZERO_BD,
   ZERO_BI
 } from "./common";
-import {Bytes} from "@graphprotocol/graph-ts/index";
 
-export const factoryContractV2 = FactoryContract.bind(Address.fromString(FACTORY_ADDRESS_V2))
-export const factoryContractV3 = FactoryContract.bind(Address.fromString(FACTORY_ADDRESS_V3))
 
 export function handleLPoolPairCreated(event: LPoolPairCreated): void {
   let factory = Factory.load(FACTORY_ID)

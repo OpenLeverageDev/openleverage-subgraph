@@ -12,9 +12,5 @@
     "prepare:bsc": "mustache ../../config/bsc.json template.yaml > subgraph.yaml",
     "prepare:kovan": "mustache ../../config/kovan.json template.yaml > subgraph.yaml",
     "prepare:mainnet": "mustache ../../config/mainnet.json template.yaml > subgraph.yaml"
-  },
-  "dependencies": {
-    "@graphprotocol/graph-cli": "0.26.0",
-    "@graphprotocol/graph-ts": "0.24.1"
   }
 }
