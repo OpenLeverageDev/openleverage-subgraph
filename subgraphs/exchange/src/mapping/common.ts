@@ -1,14 +1,12 @@
 import { log, BigInt, BigDecimal, Address } from '@graphprotocol/graph-ts'
-import {Controller} from "../../generated/Controller/Controller";
 import {ERC20} from "../../generated/Controller/ERC20";
 import {ERC20SymbolBytes} from "../../generated/Controller/ERC20SymbolBytes";
 import {ERC20NameBytes} from "../../generated/Controller/ERC20NameBytes";
-
+import { dexAddr } from '../../../../config/bsc';
+// import { dexAddr } from '../../../../config/mainnet';
 
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
-export const FACTORY_ADDRESS_V2 = '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f'
-export const FACTORY_ADDRESS_V3 = '0x1f98431c8ad98523631ae4a59f267346ea31f984'
-export const DEX_AGG_ADDRESS = '0xd78b5db4aec619779b4c7d1ab99e290e6347d66a'
+export const DEX_AGG_ADDRESS = dexAddr //bsc
 export const FACTORY_ID = "1"
 
 export const ZERO_BI = BigInt.fromI32(0)
@@ -17,8 +15,6 @@ export const ZERO_BD = BigDecimal.fromString('0')
 export const ONE_BD = BigDecimal.fromString('1')
 export const BI_18 = BigInt.fromI32(18)
 
-export const factoryContractV2 = Controller.bind(Address.fromString(FACTORY_ADDRESS_V2))
-export const factoryContractV3 = Controller.bind(Address.fromString(FACTORY_ADDRESS_V3))
 
 export function fetchTokenSymbol(tokenAddress: Address): string {
     let symbolValue = 'unknown'

@@ -1,7 +1,12 @@
 import {
   Address,
-  BigInt, log,
+  BigInt,
 } from "@graphprotocol/graph-ts"
+// bsc
+import { baseTokenList,baseTokenNameMap,baseTokenDexMap,baseTokenDecimalsMap } from "../../../../config/bsc";
+// eth
+// import { baseTokenList,baseTokenNameMap,baseTokenDexMap,baseTokenDecimalsMap } from "../../../../config/eth";
+
 
 // Initialize a Token Definition with the attributes
 export class TokenDefinition {
@@ -20,72 +25,21 @@ export class TokenDefinition {
 
   // Get all tokens with a static defintion
   static getStaticDefinitions(): Array<TokenDefinition> {
-    const staticDefinitions = new Array<TokenDefinition>()
-
-    // the first token is USDC
-    const tokenUSDC = new TokenDefinition(
-        Address.fromString('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'),
-        'USDC',
-        BigInt.fromI32(1),
-        BigInt.fromI32(6)
-    )
-    staticDefinitions.push(tokenUSDC)
-
-    const tokenFEI = new TokenDefinition(
-        Address.fromString('0x956f47f50a910163d8bf957cf5846d573e7f87ca'),
-        'FEI',
-        BigInt.fromI32(1),
-        BigInt.fromI32(18)
-    )
-    staticDefinitions.push(tokenFEI)
-
-    const tokenETH = new TokenDefinition(
-        Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'),
-        'tokenETH',
-        BigInt.fromI32(1),
-        BigInt.fromI32(18)
-    )
-    staticDefinitions.push(tokenETH)
-
-    const tokenWBTC = new TokenDefinition(
-        Address.fromString('0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'),
-        'WBTC',
-        BigInt.fromI32(1),
-        BigInt.fromI32(8)
-    )
-    staticDefinitions.push(tokenWBTC)
-
-    const tokenWUSDT = new TokenDefinition(
-        Address.fromString('0xa47c8bf37f92abed4a126bda807a7b7498661acd'),
-        'WUSDT',
-        BigInt.fromI32(33554932),
-        BigInt.fromI32(18)
-    )
-    staticDefinitions.push(tokenWUSDT)
-
-    const tokenOHM2 = new TokenDefinition(
-        Address.fromString('0x853d955acef822db058eb8505911ed77f175b99e'),
-        'FRAX',
-        BigInt.fromI32(1),
-        BigInt.fromI32(18)
-    )
-    staticDefinitions.push(tokenOHM2)
-
-    const tokenUSDT = new TokenDefinition(
-        Address.fromString('0xdac17f958d2ee523a2206206994597c13d831ec7'),
-        'USDT',
-        BigInt.fromI32(1),
-        BigInt.fromI32(6)
-    )
-    staticDefinitions.push(tokenUSDT)
-
-    const tokenDAI = new TokenDefinition(
-        Address.fromString('0x6b175474e89094c44da98b954eedeac495271d0f'),
-        'DAI',
-        BigInt.fromI32(1),
-        BigInt.fromI32(18)
-    )
-    staticDefinitions.push(tokenDAI)
+    const staticDefinitions = new Array<TokenDefinition>();
+    if(baseTokenList){
+      for(var i = 0; i<baseTokenList.length; i++){
+        const name = baseTokenNameMap.get(baseTokenList[i]);
+        const dex = BigInt.fromString(baseTokenDexMap.get(baseTokenList[i]));
+        const decimals = BigInt.fromString(baseTokenDecimalsMap.get(baseTokenList[i]));
+        const token = new TokenDefinition(
+          Address.fromString(baseTokenList[i]),
+          name,
+          dex,
+          decimals,
+        )
+        staticDefinitions.push(token);
+      }
+    }
 
     return staticDefinitions
   }

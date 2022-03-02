@@ -4,7 +4,7 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: LPool
-    network: mainnet
+    network: {{ network }}
     source:
       address: "{{ lpool_address }}"
       abi: LPool
@@ -46,7 +46,7 @@ dataSources:
       file: ./src/mapping/lpool.ts
   - kind: ethereum/contract
     name: Controller
-    network: mainnet
+    network: {{ network }}
     source:
       address: "{{ controller_address }}"
       abi: Controller
@@ -76,7 +76,7 @@ dataSources:
       file: ./src/mapping/controller.ts
   - kind: ethereum/contract
     name: Lever
-    network: mainnet
+    network: {{ network }}
     source:
       address: "{{ lever_address }}"
       abi: Lever
