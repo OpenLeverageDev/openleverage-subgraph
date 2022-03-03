@@ -3,7 +3,7 @@ import {ERC20} from "../../generated/Controller/ERC20";
 import {ERC20SymbolBytes} from "../../generated/Controller/ERC20SymbolBytes";
 import {ERC20NameBytes} from "../../generated/Controller/ERC20NameBytes";
 import { dexAddr } from '../../../../config/bsc';
-// import { dexAddr } from '../../../../config/mainnet';
+//import { dexAddr } from '../../../../config/mainnet';
 
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
 export const DEX_AGG_ADDRESS = dexAddr //bsc

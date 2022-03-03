@@ -5,7 +5,7 @@ import {
 // bsc
 import { baseTokenList,baseTokenNameMap,baseTokenDexMap,baseTokenDecimalsMap } from "../../../../config/bsc";
 // eth
-// import { baseTokenList,baseTokenNameMap,baseTokenDexMap,baseTokenDecimalsMap } from "../../../../config/eth";
+//import { baseTokenList,baseTokenNameMap,baseTokenDexMap,baseTokenDecimalsMap } from "../../../../config/mainnet";
 
 
 // Initialize a Token Definition with the attributes
