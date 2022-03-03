@@ -32,15 +32,26 @@ export function handleLPoolPairCreated(event: LPoolPairCreated): void {
   factory.pairCount = factory.pairCount + 1
 
   // v2 or v3
-  const dex = parseInt(event.params.dexData.toHexString())
-  const isV2 = dex < 255
-  log.info("handleLPoolPairCreated dexData = {}, dex = {}, isV2 = {}", [event.params.dexData.toHexString(), dex.toString(), isV2.toString()])
+  let isV2 = false;
+  const dex4 = (event.params.dexData.toHexString()).toString().slice(0,4);
+  let dexName:BigInt;
+  if(dex4 == '0x02' && event.params.dexData.length>=4){
+    // v3
+    const dex8 = (event.params.dexData.toHexString()).toString().slice(0,8);
+    const dexStr = parseInt(dex8).toString();
+    dexName = BigInt.fromString(dexStr.indexOf(".") > 0 ? dexStr.substr(0, dexStr.length -2) : dexStr)
+    isV2 = false;
+  }else { 
+    isV2 = true;
+    const dexStr = parseInt(dex4).toString();
+    dexName = BigInt.fromString(dexStr.indexOf(".") > 0 ? dexStr.substr(0, dexStr.length -2) : dexStr)
+  }
+  log.info("handleLPoolPairCreated dexData = {}, dex = {}, isV2 = {}", [event.params.dexData.toHexString(), dexName.toString(), isV2.toString()])
 
   // create the tokens
   let token0 = Token.load(event.params.token0.toHexString())
   let token1 = Token.load(event.params.token1.toHexString())
 
-  // fetch info if null
   if (token0 === null) {
     token0 = new Token(event.params.token0.toHexString())
     token0.symbol = fetchTokenSymbol(event.params.token0)
@@ -85,9 +96,6 @@ export function handleLPoolPairCreated(event: LPoolPairCreated): void {
     token1.txCount = ZERO_BI
   }
 
-  const dexStr = dex.toString()
-  const dexName = BigInt.fromString(dexStr.indexOf(".") > 0 ? dexStr.substr(0, dexStr.length -2) : dexStr)
-  log.info("dexData to dexName, dexData={}, dexName={}", [dex.toString(), dexName.toString()])
   const pair = new Pair(BigInt.fromI32(event.params.marketId).toString()) as Pair
   pair.token0 = token0.id
   pair.token1 = token1.id
